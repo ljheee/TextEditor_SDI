@@ -62,15 +62,15 @@ public class TextEditorSDI extends JFrame {
 	private UndoManager undoManager = new UndoManager();
 	
 	private JLabel fileInfo = new JLabel("状态栏:");
-	private JLabel pathInfo = new JLabel("                              ");
-	private JLabel timeInfo = new JLabel("           ");
+	private JLabel pathInfo = new JLabel("  ");
+	private JLabel timeInfo = new JLabel("  ");
 	
 	
 	public  JTextArea getTextArea(){
 		return contentArea;
 	}
 	
-	public TextEditorSDI(){     //构造方法
+	public TextEditorSDI() throws IOException{     //构造方法
 		super("TextEditor SDI");
 		this.setSize(DefaultWidth, DefaultHeight);
 		this.setBackground(Color.darkGray);
@@ -79,7 +79,7 @@ public class TextEditorSDI extends JFrame {
 		
 		//设置文件过滤
 		fileChooser.setFileFilter(new FileNameExtensionFilter("General", new String[]{"txt","java","html","class","xls","ppt","doc","docx","xml","exe"}));
-		contentArea=new JTextArea("Welcome....");
+		contentArea=new JTextArea();
 		
 		mainMenuBar=new JMenuBar();
 		JToolBar toolBar=new JToolBar();
@@ -187,6 +187,7 @@ public class TextEditorSDI extends JFrame {
 				contentArea.setText("");
 				TextEditorSDI.this.setTitle("TextEditor SDI"+"   "+"新建文件");
 				fileInfo.setText("新建文件");
+				pathInfo.setText("");
 			}
 		});
 		open.addActionListener(new ActionListener() {
@@ -197,7 +198,6 @@ public class TextEditorSDI extends JFrame {
 				
 				BufferedReader br =null;
 				File tempFile = fileChooser.getSelectedFile();
-				
 				try {
 					if(select==JFileChooser.APPROVE_OPTION&&tempFile!=null&&tempFile.exists()){  //如果要打开的文件存在--才打开
 						contentArea.setText("");
@@ -208,7 +208,7 @@ public class TextEditorSDI extends JFrame {
 						while(true){
 							String content = br.readLine();//每次读取一行字符串
 							if(content==null)  break;
-							contentArea.append(content);
+							contentArea.append(content);//此处换用JEditorPane,无append()方法
 							contentArea.append("\n");//换行
 						}
 					}
@@ -291,9 +291,9 @@ public class TextEditorSDI extends JFrame {
 			}
 		});
 		
-		this.add(new JScrollPane(contentArea)); //
+		this.add(new JScrollPane(contentArea)); //添加文本区 --到中间
 		
-		contentArea.getDocument().addUndoableEditListener(undoManager);
+		contentArea.getDocument().addUndoableEditListener(undoManager);//给文本区，注册可撤销编辑
 		
 		//状态栏---使用JToolBar，设为不可拖动
 		JToolBar  bottomToolBar = new JToolBar();
@@ -373,7 +373,7 @@ public class TextEditorSDI extends JFrame {
 	}
 
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
           new TextEditorSDI();
 	}
 
